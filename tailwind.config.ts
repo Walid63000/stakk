@@ -13,13 +13,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#101114",
-        raise: "#17181D",
+        ink: "#0C0D10",
+        raise: "#16171B",
         raise2: "#1E2026",
         paper: "#F5F3EE",
-        muted: "#8F8D86",
+        muted: "#8B8B87",
         faint: "#57554F",
-        line: "rgba(245,243,238,0.08)",
+        line: "rgba(245,243,238,0.06)",
         ember: {
           DEFAULT: "#D6362B",
           deep: "#A3251C",

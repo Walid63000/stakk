@@ -78,10 +78,9 @@ export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
         <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-muted">
           Récupération
         </span>
-        <span className="font-display text-[132px] leading-none text-paper">
+        <span className="mt-1 font-display text-[148px] leading-none text-paper">
           {display}
         </span>
-        <span className="font-mono text-[12px] text-faint">/ 100</span>
       </div>
     </div>
   );

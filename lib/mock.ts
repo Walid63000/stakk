@@ -7,6 +7,12 @@ export const today = {
   dateLabel: "Dim. 20 juil.",
 };
 
+// Mini-cercles secondaires sous le verdict.
+export const secondary = {
+  sleepPerf: 88, // % — performance de la nuit
+  strainYesterday: 62, // effort d'hier, échelle 0..100
+};
+
 // Les trois composantes du score de récupération.
 export type VitalEntry = {
   id: string;
@@ -18,12 +24,38 @@ export type VitalEntry = {
   unit: string;
   /** Proportion 0..1 — pilote la mini-jauge pile de disques. */
   pct: number;
+  /** Tendance vs hier. */
+  trend: { dir: "up" | "down"; label: string };
 };
 
 export const vitals: VitalEntry[] = [
-  { id: "sleep", label: "Sommeil", value: 442, format: "hm", unit: "", pct: 0.88 },
-  { id: "hrv", label: "HRV", value: 62, format: "int", unit: "ms", pct: 0.74 },
-  { id: "fc", label: "FC repos", value: 52, format: "int", unit: "bpm", pct: 0.81 },
+  {
+    id: "sleep",
+    label: "Sommeil",
+    value: 442,
+    format: "hm",
+    unit: "",
+    pct: 0.88,
+    trend: { dir: "up", label: "+18 min vs hier" },
+  },
+  {
+    id: "hrv",
+    label: "HRV",
+    value: 62,
+    format: "int",
+    unit: "ms",
+    pct: 0.74,
+    trend: { dir: "up", label: "+6 ms vs hier" },
+  },
+  {
+    id: "fc",
+    label: "FC repos",
+    value: 52,
+    format: "int",
+    unit: "bpm",
+    pct: 0.81,
+    trend: { dir: "down", label: "−2 bpm vs hier" },
+  },
 ];
 
 export type SessionEntry = {

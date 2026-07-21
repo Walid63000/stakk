@@ -1,9 +1,30 @@
+import Link from "next/link";
 import { DiscStack } from "@/components/DiscStack";
 import { ScoreRing } from "@/components/ScoreRing";
+import { MiniRing } from "@/components/MiniRing";
 import { CountUp } from "@/components/CountUp";
 import { Wordmark } from "@/components/Wordmark";
-import { today, vitals } from "@/lib/mock";
+import { today, secondary, vitals } from "@/lib/mock";
 import { verdictFor, zoneFor } from "@/lib/score";
+
+function TrendArrow({ dir }: { dir: "up" | "down" }) {
+  return (
+    <svg
+      viewBox="0 0 12 12"
+      width={11}
+      height={11}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={dir === "down" ? { transform: "scaleY(-1)" } : undefined}
+    >
+      <path d="M2.5 9.5 9.5 2.5" />
+      <path d="M4 2.5h5.5V8" />
+    </svg>
+  );
+}
 
 export default function HomePage() {
   const zone = zoneFor(today.score);
@@ -11,8 +32,8 @@ export default function HomePage() {
 
   return (
     <div className="stagger">
-      {/* Fond : dégradé radial subtil centré derrière le score,
-          + trame de points quasi invisible façon caoutchouc de plateau */}
+      {/* Fond : dégradé radial subtil derrière le score + trame de points
+          quasi invisible façon caoutchouc de plateau */}
       <div
         aria-hidden
         className="pointer-events-none fixed inset-0 -z-10"
@@ -31,10 +52,11 @@ export default function HomePage() {
         }}
       />
 
-      {/* Header minimal : wordmark au A-pile, streak à droite */}
+      {/* Header minimal : wordmark au A-pile, streak à droite.
+          Le rouge STAKK : streak et sommet du A-pile, rien d'autre ici. */}
       <header className="rise flex items-center justify-between pt-3">
         <Wordmark />
-        <div className="flex items-center gap-1.5 text-muted">
+        <div className="flex items-center gap-1.5 text-ember">
           <svg
             viewBox="0 0 24 24"
             width={16}
@@ -53,13 +75,13 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Hero : le score occupe l'essentiel de l'écran */}
-      <section className="rise flex min-h-[46dvh] items-center justify-center">
+      {/* UN héros : le score de récupération, rien ne lui dispute l'écran */}
+      <section className="rise flex min-h-[41dvh] items-center justify-center py-6">
         <ScoreRing score={today.score} zone={zone} />
       </section>
 
-      {/* Verdict avec sa barre latérale couleur de zone — 2 lignes max */}
-      <section className="rise mt-2 flex justify-center">
+      {/* Verdict direct, 2 lignes max, barre latérale couleur de zone */}
+      <section className="rise mt-1 flex justify-center">
         <div className="flex items-center gap-3.5">
           <span
             className="w-[3px] self-stretch rounded-pill"
@@ -76,30 +98,55 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Les 3 composantes : glassmorphism discret, mini-jauge signature */}
+      {/* Rangée secondaire : 2 mini-cercles tapables */}
+      <section className="rise mt-8 flex items-start justify-center gap-12">
+        <Link
+          href="/tendances"
+          className="pressable flex flex-col items-center gap-2.5"
+        >
+          <MiniRing value={secondary.sleepPerf} color="#1E9E52" />
+          <span className="font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
+            Sommeil
+          </span>
+        </Link>
+        <Link
+          href="/tendances"
+          className="pressable flex flex-col items-center gap-2.5"
+        >
+          <MiniRing value={secondary.strainYesterday} color="#F5F3EE" />
+          <span className="font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
+            Strain hier
+          </span>
+        </Link>
+      </section>
+
+      {/* Les 3 composantes : label en capitales, valeur mono énorme,
+          tendance vs hier, jauge pile de disques */}
       <section className="rise mt-8 flex flex-col gap-2.5">
         {vitals.map((v) => (
           <article
             key={v.id}
-            className="flex items-center justify-between rounded-[16px] border p-4 backdrop-blur-md"
-            style={{
-              background: "rgba(245,243,238,0.04)",
-              borderColor: "rgba(245,243,238,0.08)",
-            }}
+            className="flex items-center justify-between rounded-card border border-line bg-raise px-5 py-4"
           >
-            <span className="text-[14px] font-medium text-muted">
-              {v.label}
-            </span>
-            <div className="flex items-center gap-5">
-              <span className="font-mono text-[18px] font-semibold text-paper">
+            <div className="flex flex-col gap-3">
+              <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
+                {v.label}
+              </span>
+              <DiscStack size={18} value={v.pct} />
+            </div>
+            <div className="text-right">
+              <p className="font-mono text-[28px] font-semibold leading-none text-paper">
                 <CountUp to={v.value} format={v.format} />
                 {v.unit && (
-                  <span className="ml-1 text-[12px] font-normal text-muted">
+                  <span className="ml-1.5 text-[13px] font-normal text-muted">
                     {v.unit}
                   </span>
                 )}
-              </span>
-              <DiscStack size={20} value={v.pct} />
+              </p>
+              <p className="mt-1.5 flex items-center justify-end gap-1 font-mono text-[12px] text-muted">
+                <TrendArrow dir={v.trend.dir} />
+                {v.trend.label}
+              </p>
             </div>
           </article>
         ))}
