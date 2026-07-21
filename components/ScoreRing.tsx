@@ -2,7 +2,8 @@
 
 // Hero de l'écran Home : le score de récup dans un anneau épais.
 // Remplissage à l'ouverture : 800ms, courbe spring avec léger overshoot,
-// glow subtil de la couleur de zone, haptic léger quand l'anneau se pose.
+// trait en dégradé de zone, glow discret, haptic léger quand l'anneau
+// se pose. Sous le chiffre : le mot d'état de la zone.
 
 import { useEffect, useRef, useState } from "react";
 import { tapHaptic } from "@/lib/haptics";
@@ -48,6 +49,13 @@ export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
   return (
     <div className="relative" style={{ width: SIZE, height: SIZE }}>
       <svg viewBox={`0 0 ${SIZE} ${SIZE}`} width={SIZE} height={SIZE}>
+        <defs>
+          {/* Dégradé subtil dans le sens de progression de l'arc */}
+          <linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor={zone.color} />
+            <stop offset="100%" stopColor={zone.color2} />
+          </linearGradient>
+        </defs>
         <circle
           cx={SIZE / 2}
           cy={SIZE / 2}
@@ -61,7 +69,7 @@ export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
           cy={SIZE / 2}
           r={R}
           fill="none"
-          stroke={zone.color}
+          stroke="url(#ring-grad)"
           strokeWidth={STROKE}
           strokeLinecap="round"
           strokeDasharray={C}
@@ -70,7 +78,7 @@ export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
           style={{
             // Spring léger : petit overshoot au-delà de la cible, puis retour.
             transition: `stroke-dashoffset ${DURATION}ms cubic-bezier(0.3, 1.18, 0.4, 1)`,
-            filter: `drop-shadow(0 0 24px ${zone.glow})`,
+            filter: `drop-shadow(0 0 30px ${zone.glow})`,
           }}
         />
       </svg>
@@ -78,8 +86,14 @@ export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
         <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-muted">
           Récupération
         </span>
-        <span className="mt-1 font-display text-[148px] leading-none text-paper">
+        <span className="font-display text-[150px] leading-none tracking-[-0.02em] text-paper">
           {display}
+        </span>
+        <span
+          className="ml-[0.3em] mt-2 font-display text-[20px] leading-none tracking-[0.3em]"
+          style={{ color: zone.color }}
+        >
+          {zone.word}
         </span>
       </div>
     </div>

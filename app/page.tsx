@@ -4,7 +4,7 @@ import { ScoreRing } from "@/components/ScoreRing";
 import { MiniRing } from "@/components/MiniRing";
 import { CountUp } from "@/components/CountUp";
 import { Wordmark } from "@/components/Wordmark";
-import { today, secondary, vitals } from "@/lib/mock";
+import { today, scenarioFor } from "@/lib/mock";
 import { verdictFor, zoneFor } from "@/lib/score";
 
 function TrendArrow({ dir }: { dir: "up" | "down" }) {
@@ -26,9 +26,20 @@ function TrendArrow({ dir }: { dir: "up" | "down" }) {
   );
 }
 
-export default function HomePage() {
-  const zone = zoneFor(today.score);
-  const verdict = verdictFor(today.score);
+export default function HomePage({
+  searchParams,
+}: {
+  searchParams?: { score?: string };
+}) {
+  // ?score=55 permet de prévisualiser les zones jaune/rouge.
+  const parsed = Number(searchParams?.score);
+  const score = Number.isFinite(parsed)
+    ? Math.min(100, Math.max(0, Math.round(parsed)))
+    : today.score;
+
+  const zone = zoneFor(score);
+  const verdict = verdictFor(score);
+  const data = scenarioFor(score);
 
   return (
     <div className="stagger">
@@ -53,7 +64,7 @@ export default function HomePage() {
       />
 
       {/* Header minimal : wordmark au A-pile, streak à droite.
-          Le rouge STAKK : streak et sommet du A-pile, rien d'autre ici. */}
+          La flamme et le chiffre en rouge brand — l'accent identitaire. */}
       <header className="rise flex items-center justify-between pt-3">
         <Wordmark />
         <div className="flex items-center gap-1.5 text-ember">
@@ -69,7 +80,7 @@ export default function HomePage() {
           >
             <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
           </svg>
-          <span className="font-mono text-[14px] font-semibold text-paper">
+          <span className="font-mono text-[14px] font-semibold">
             <CountUp to={today.streakDays} />
           </span>
         </div>
@@ -77,7 +88,7 @@ export default function HomePage() {
 
       {/* UN héros : le score de récupération, rien ne lui dispute l'écran */}
       <section className="rise flex min-h-[41dvh] items-center justify-center py-6">
-        <ScoreRing score={today.score} zone={zone} />
+        <ScoreRing score={score} zone={zone} />
       </section>
 
       {/* Verdict direct, 2 lignes max, barre latérale couleur de zone */}
@@ -104,7 +115,10 @@ export default function HomePage() {
           href="/tendances"
           className="pressable flex flex-col items-center gap-2.5"
         >
-          <MiniRing value={secondary.sleepPerf} color="#1E9E52" />
+          <MiniRing
+            value={data.sleepPerf}
+            color={zoneFor(data.sleepPerf).color}
+          />
           <span className="font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
             Sommeil
           </span>
@@ -113,17 +127,18 @@ export default function HomePage() {
           href="/tendances"
           className="pressable flex flex-col items-center gap-2.5"
         >
-          <MiniRing value={secondary.strainYesterday} color="#F5F3EE" />
+          <MiniRing value={data.strainYesterday} color="#8B8B87" />
           <span className="font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
             Strain hier
           </span>
         </Link>
       </section>
 
-      {/* Les 3 composantes : label en capitales, valeur mono énorme,
-          tendance vs hier, jauge pile de disques */}
+      {/* Les 3 composantes : label en capitales, jauge pile de disques
+          dans la couleur de zone de la métrique, valeur mono énorme,
+          tendance vs hier */}
       <section className="rise mt-8 flex flex-col gap-2.5">
-        {vitals.map((v) => (
+        {data.vitals.map((v) => (
           <article
             key={v.id}
             className="flex items-center justify-between rounded-card border border-line bg-raise px-5 py-4"
@@ -132,7 +147,11 @@ export default function HomePage() {
               <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
                 {v.label}
               </span>
-              <DiscStack size={18} value={v.pct} />
+              <DiscStack
+                size={18}
+                value={v.pct}
+                color={zoneFor(v.pct * 100).color}
+              />
             </div>
             <div className="text-right">
               <p className="font-mono text-[28px] font-semibold leading-none text-paper">

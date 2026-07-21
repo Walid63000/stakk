@@ -23,10 +23,15 @@ type Props = {
    * Sans valeur, rendu logo (toutes les barres pleines).
    */
   value?: number;
+  /**
+   * Couleur des barres allumées en mode jauge — typiquement la couleur
+   * de zone de la métrique. La jauge devient information, pas icône.
+   */
+  color?: string;
   className?: string;
 };
 
-export function DiscStack({ size = 28, value, className }: Props) {
+export function DiscStack({ size = 28, value, color, className }: Props) {
   const lit = value === undefined ? BARS.length : Math.round(value * BARS.length);
   const width = (size * VIEW_W) / VIEW_H;
 
@@ -46,9 +51,11 @@ export function DiscStack({ size = 28, value, className }: Props) {
         const emberAllowed = value === undefined || value >= 0.995;
         const fill = !on
           ? "rgba(245,243,238,0.10)"
-          : bar.ember && emberAllowed
-            ? "#D6362B"
-            : "#F5F3EE";
+          : color !== undefined
+            ? color
+            : bar.ember && emberAllowed
+              ? "#D6362B"
+              : "#F5F3EE";
         return (
           <rect
             key={i}

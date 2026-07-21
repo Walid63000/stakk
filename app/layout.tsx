@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Anton, Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { TabBar } from "@/components/TabBar";
@@ -47,7 +48,9 @@ export default function RootLayout({
         {/* Colonne mobile : l'app vit dans 430px max, centrée sur desktop */}
         <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-[430px] flex-col">
           <main className="flex-1 px-6 pb-32 pt-4">{children}</main>
-          <TabBar />
+          <Suspense fallback={null}>
+            <TabBar />
+          </Suspense>
         </div>
       </body>
     </html>

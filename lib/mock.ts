@@ -7,12 +7,6 @@ export const today = {
   dateLabel: "Dim. 20 juil.",
 };
 
-// Mini-cercles secondaires sous le verdict.
-export const secondary = {
-  sleepPerf: 88, // % — performance de la nuit
-  strainYesterday: 62, // effort d'hier, échelle 0..100
-};
-
 // Les trois composantes du score de récupération.
 export type VitalEntry = {
   id: string;
@@ -22,41 +16,55 @@ export type VitalEntry = {
   /** Format d'affichage de la valeur. */
   format: "hm" | "int";
   unit: string;
-  /** Proportion 0..1 — pilote la mini-jauge pile de disques. */
+  /** Qualité 0..1 — pilote la mini-jauge pile de disques et sa couleur. */
   pct: number;
   /** Tendance vs hier. */
   trend: { dir: "up" | "down"; label: string };
 };
 
-export const vitals: VitalEntry[] = [
-  {
-    id: "sleep",
-    label: "Sommeil",
-    value: 442,
-    format: "hm",
-    unit: "",
-    pct: 0.88,
-    trend: { dir: "up", label: "+18 min vs hier" },
-  },
-  {
-    id: "hrv",
-    label: "HRV",
-    value: 62,
-    format: "int",
-    unit: "ms",
-    pct: 0.74,
-    trend: { dir: "up", label: "+6 ms vs hier" },
-  },
-  {
-    id: "fc",
-    label: "FC repos",
-    value: 52,
-    format: "int",
-    unit: "bpm",
-    pct: 0.81,
-    trend: { dir: "down", label: "−2 bpm vs hier" },
-  },
-];
+export type Scenario = {
+  score: number;
+  sleepPerf: number; // % — performance de la nuit
+  strainYesterday: number; // effort d'hier, échelle 0..100
+  vitals: VitalEntry[];
+};
+
+// Trois scénarios de démonstration, un par zone, pour valider que le
+// système de couleurs tient dans les trois états.
+export function scenarioFor(score: number): Scenario {
+  if (score >= 67)
+    return {
+      score,
+      sleepPerf: 88,
+      strainYesterday: 62,
+      vitals: [
+        { id: "sleep", label: "Sommeil", value: 442, format: "hm", unit: "", pct: 0.88, trend: { dir: "up", label: "+18 min vs hier" } },
+        { id: "hrv", label: "HRV", value: 62, format: "int", unit: "ms", pct: 0.74, trend: { dir: "up", label: "+6 ms vs hier" } },
+        { id: "fc", label: "FC repos", value: 52, format: "int", unit: "bpm", pct: 0.81, trend: { dir: "down", label: "−2 bpm vs hier" } },
+      ],
+    };
+  if (score >= 34)
+    return {
+      score,
+      sleepPerf: 64,
+      strainYesterday: 78,
+      vitals: [
+        { id: "sleep", label: "Sommeil", value: 365, format: "hm", unit: "", pct: 0.58, trend: { dir: "down", label: "−54 min vs hier" } },
+        { id: "hrv", label: "HRV", value: 48, format: "int", unit: "ms", pct: 0.46, trend: { dir: "down", label: "−9 ms vs hier" } },
+        { id: "fc", label: "FC repos", value: 58, format: "int", unit: "bpm", pct: 0.52, trend: { dir: "up", label: "+4 bpm vs hier" } },
+      ],
+    };
+  return {
+    score,
+    sleepPerf: 42,
+    strainYesterday: 91,
+    vitals: [
+      { id: "sleep", label: "Sommeil", value: 287, format: "hm", unit: "", pct: 0.28, trend: { dir: "down", label: "−2 h 10 vs hier" } },
+      { id: "hrv", label: "HRV", value: 31, format: "int", unit: "ms", pct: 0.2, trend: { dir: "down", label: "−18 ms vs hier" } },
+      { id: "fc", label: "FC repos", value: 66, format: "int", unit: "bpm", pct: 0.16, trend: { dir: "up", label: "+9 bpm vs hier" } },
+    ],
+  };
+}
 
 export type SessionEntry = {
   id: string;

@@ -4,8 +4,10 @@
 // Pilule flottante sur fond flouté, icônes maison, aucun code Material.
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { tapHaptic } from "@/lib/haptics";
+import { today } from "@/lib/mock";
+import { zoneFor } from "@/lib/score";
 
 type Tab = {
   href: string;
@@ -59,6 +61,15 @@ const TABS: Tab[] = [
 
 export function TabBar() {
   const pathname = usePathname();
+  const search = useSearchParams();
+
+  // L'onglet actif prend la couleur de zone du jour — détail vivant.
+  // ?score=… (previews) est respecté pour rester cohérent à l'écran.
+  const parsed = Number(search.get("score"));
+  const score = Number.isFinite(parsed)
+    ? Math.min(100, Math.max(0, Math.round(parsed)))
+    : today.score;
+  const zone = zoneFor(score);
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[430px] px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
@@ -71,8 +82,9 @@ export function TabBar() {
               href={tab.href}
               onClick={() => tapHaptic()}
               className={`pressable flex flex-col items-center gap-1 transition-colors duration-300 ${
-                active ? "text-paper" : "text-faint"
+                active ? "" : "text-faint"
               }`}
+              style={active ? { color: zone.color } : undefined}
             >
               {tab.icon}
               <span className="text-[10px] font-medium tracking-wide">
