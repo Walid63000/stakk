@@ -1,0 +1,64 @@
+{
+  "tabs": {
+    "today": "Aujourd'hui",
+    "trends": "Tendances",
+    "settings": "Réglages"
+  },
+  "home": {
+    "recovery": "Récupération",
+    "sleep": "Sommeil",
+    "yesterdaysStrain": "Strain hier",
+    "vsYesterday": "vs hier",
+    "word": {
+      "green": "READY.",
+      "yellow": "STEADY.",
+      "red": "REST."
+    },
+    "verdict": {
+      "green": {
+        "line": "Bien récupéré. Tu peux charger.",
+        "detail": "La marge est là pour une grosse séance."
+      },
+      "yellow": {
+        "line": "Forme correcte. Reste vif.",
+        "detail": "Garde une intensité modérée aujourd'hui."
+      },
+      "red": {
+        "line": "À plat. Lève le pied.",
+        "detail": "Repos, marche, couche-toi tôt. La salle attendra."
+      }
+    },
+    "vitals": {
+      "sleep": "Sommeil",
+      "hrv": "HRV",
+      "restingHr": "FC repos"
+    }
+  },
+  "trends": {
+    "title": "Tendances",
+    "subtitle": "7 derniers jours",
+    "emptyTitle": "Le graphique strain × récup arrive ici.",
+    "emptyDetail": "Encore quelques séances et tu verras ta semaine d'un seul coup d'œil."
+  },
+  "settings": {
+    "title": "Réglages",
+    "language": "Langue",
+    "groups": {
+      "you": "Toi",
+      "app": "App",
+      "account": "Compte"
+    },
+    "rows": {
+      "profile": "Profil",
+      "goals": "Objectifs",
+      "zones": "Zones de récup",
+      "notifications": "Notifications",
+      "units": "Unités",
+      "health": "Santé & capteurs",
+      "subscription": "Abonnement",
+      "privacy": "Confidentialité",
+      "logout": "Déconnexion"
+    },
+    "version": "Stakk 0.1.0"
+  }
+}

@@ -1,9 +1,12 @@
+import { getTranslations } from "next-intl/server";
+import { LanguageToggle } from "@/components/LanguageToggle";
+
 // Écran Réglages — liste sobre, sera étoffé écran par écran.
 
-const GROUPS: { title: string; rows: string[] }[] = [
-  { title: "Toi", rows: ["Profil", "Objectifs", "Zones de récup"] },
-  { title: "App", rows: ["Notifications", "Unités", "Santé & capteurs"] },
-  { title: "Compte", rows: ["Abonnement", "Confidentialité", "Déconnexion"] },
+const GROUPS: { titleKey: "you" | "app" | "account"; rows: string[] }[] = [
+  { titleKey: "you", rows: ["profile", "goals", "zones"] },
+  { titleKey: "app", rows: ["notifications", "units", "health"] },
+  { titleKey: "account", rows: ["subscription", "privacy", "logout"] },
 ];
 
 function Chevron() {
@@ -23,19 +26,22 @@ function Chevron() {
   );
 }
 
-export default function ReglagesPage() {
+export default async function ReglagesPage() {
+  const t = await getTranslations("settings");
+
   return (
     <div className="stagger">
-      <header className="rise pt-3">
+      <header className="rise flex items-center justify-between pt-3">
         <h1 className="text-[28px] font-semibold tracking-tight text-paper">
-          Réglages
+          {t("title")}
         </h1>
+        <LanguageToggle />
       </header>
 
       {GROUPS.map((group) => (
-        <section key={group.title} className="rise mt-7">
+        <section key={group.titleKey} className="rise mt-7">
           <h2 className="px-1 text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
-            {group.title}
+            {t(`groups.${group.titleKey}`)}
           </h2>
           <div className="mt-2.5 overflow-hidden rounded-card border border-line bg-raise">
             {group.rows.map((row, i) => (
@@ -45,7 +51,7 @@ export default function ReglagesPage() {
                   i > 0 ? "border-t border-line" : ""
                 }`}
               >
-                {row}
+                {t(`rows.${row}`)}
                 <span className="text-faint">
                   <Chevron />
                 </span>
@@ -56,7 +62,7 @@ export default function ReglagesPage() {
       ))}
 
       <p className="rise mt-7 text-center font-mono text-[11px] text-faint">
-        Stakk 0.1.0
+        {t("version")}
       </p>
     </div>
   );

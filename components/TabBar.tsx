@@ -5,13 +5,14 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { tapHaptic } from "@/lib/haptics";
 import { today } from "@/lib/mock";
 import { zoneFor } from "@/lib/score";
 
 type Tab = {
   href: string;
-  label: string;
+  labelKey: "today" | "trends" | "settings";
   icon: React.ReactNode;
 };
 
@@ -26,7 +27,7 @@ const stroke = {
 const TABS: Tab[] = [
   {
     href: "/",
-    label: "Aujourd'hui",
+    labelKey: "today",
     icon: (
       <svg viewBox="0 0 24 24" width={22} height={22} {...stroke}>
         <path d="M9.5 6h5" />
@@ -37,7 +38,7 @@ const TABS: Tab[] = [
   },
   {
     href: "/tendances",
-    label: "Tendances",
+    labelKey: "trends",
     icon: (
       <svg viewBox="0 0 24 24" width={22} height={22} {...stroke}>
         <path d="M4 17.5 9.5 12l3.5 3 6.5-7" />
@@ -47,7 +48,7 @@ const TABS: Tab[] = [
   },
   {
     href: "/reglages",
-    label: "Réglages",
+    labelKey: "settings",
     icon: (
       <svg viewBox="0 0 24 24" width={22} height={22} {...stroke}>
         <path d="M4 8h9" />
@@ -60,12 +61,14 @@ const TABS: Tab[] = [
 ];
 
 export function TabBar() {
+  const t = useTranslations("tabs");
   const pathname = usePathname();
   const search = useSearchParams();
 
   // L'onglet actif prend la couleur de zone du jour — détail vivant.
   // ?score=… (previews) est respecté pour rester cohérent à l'écran.
-  const parsed = Number(search.get("score"));
+  const raw = search.get("score");
+  const parsed = raw === null ? NaN : Number(raw);
   const score = Number.isFinite(parsed)
     ? Math.min(100, Math.max(0, Math.round(parsed)))
     : today.score;
@@ -88,7 +91,7 @@ export function TabBar() {
             >
               {tab.icon}
               <span className="text-[10px] font-medium tracking-wide">
-                {tab.label}
+                {t(tab.labelKey)}
               </span>
             </Link>
           );

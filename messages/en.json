@@ -1,0 +1,64 @@
+{
+  "tabs": {
+    "today": "Today",
+    "trends": "Trends",
+    "settings": "Settings"
+  },
+  "home": {
+    "recovery": "Recovery",
+    "sleep": "Sleep",
+    "yesterdaysStrain": "Yesterday's strain",
+    "vsYesterday": "vs yesterday",
+    "word": {
+      "green": "READY.",
+      "yellow": "STEADY.",
+      "red": "REST."
+    },
+    "verdict": {
+      "green": {
+        "line": "Well recovered. Go heavy.",
+        "detail": "You've got room for a big session."
+      },
+      "yellow": {
+        "line": "Decent shape. Stay sharp.",
+        "detail": "Keep intensity moderate today."
+      },
+      "red": {
+        "line": "Run down. Back off.",
+        "detail": "Rest, walk, sleep early. The gym will wait."
+      }
+    },
+    "vitals": {
+      "sleep": "Sleep",
+      "hrv": "HRV",
+      "restingHr": "Resting HR"
+    }
+  },
+  "trends": {
+    "title": "Trends",
+    "subtitle": "Last 7 days",
+    "emptyTitle": "The strain × recovery chart lands here.",
+    "emptyDetail": "A few more sessions and you'll see your week at a glance."
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "groups": {
+      "you": "You",
+      "app": "App",
+      "account": "Account"
+    },
+    "rows": {
+      "profile": "Profile",
+      "goals": "Goals",
+      "zones": "Recovery zones",
+      "notifications": "Notifications",
+      "units": "Units",
+      "health": "Health & sensors",
+      "subscription": "Subscription",
+      "privacy": "Privacy",
+      "logout": "Log out"
+    },
+    "version": "Stakk 0.1.0"
+  }
+}

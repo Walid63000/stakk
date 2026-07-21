@@ -1,11 +1,12 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { DiscStack } from "@/components/DiscStack";
 import { ScoreRing } from "@/components/ScoreRing";
 import { MiniRing } from "@/components/MiniRing";
 import { CountUp } from "@/components/CountUp";
 import { Wordmark } from "@/components/Wordmark";
 import { today, scenarioFor } from "@/lib/mock";
-import { verdictFor, zoneFor } from "@/lib/score";
+import { zoneFor } from "@/lib/score";
 
 function TrendArrow({ dir }: { dir: "up" | "down" }) {
   return (
@@ -26,11 +27,13 @@ function TrendArrow({ dir }: { dir: "up" | "down" }) {
   );
 }
 
-export default function HomePage({
+export default async function HomePage({
   searchParams,
 }: {
   searchParams?: { score?: string };
 }) {
+  const t = await getTranslations("home");
+
   // ?score=55 permet de prévisualiser les zones jaune/rouge.
   const parsed = Number(searchParams?.score);
   const score = Number.isFinite(parsed)
@@ -38,7 +41,6 @@ export default function HomePage({
     : today.score;
 
   const zone = zoneFor(score);
-  const verdict = verdictFor(score);
   const data = scenarioFor(score);
 
   return (
@@ -100,10 +102,10 @@ export default function HomePage({
           />
           <div className="text-left">
             <p className="text-[17px] font-semibold leading-snug text-paper">
-              {verdict.line}
+              {t(`verdict.${zone.name}.line`)}
             </p>
             <p className="mt-0.5 text-[14px] leading-snug text-muted">
-              {verdict.detail}
+              {t(`verdict.${zone.name}.detail`)}
             </p>
           </div>
         </div>
@@ -120,7 +122,7 @@ export default function HomePage({
             color={zoneFor(data.sleepPerf).color}
           />
           <span className="font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
-            Sommeil
+            {t("sleep")}
           </span>
         </Link>
         <Link
@@ -128,8 +130,8 @@ export default function HomePage({
           className="pressable flex flex-col items-center gap-2.5"
         >
           <MiniRing value={data.strainYesterday} color="#8B8B87" />
-          <span className="font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
-            Strain hier
+          <span className="max-w-[140px] text-center font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
+            {t("yesterdaysStrain")}
           </span>
         </Link>
       </section>
@@ -145,7 +147,7 @@ export default function HomePage({
           >
             <div className="flex flex-col gap-3">
               <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
-                {v.label}
+                {t(`vitals.${v.labelKey}`)}
               </span>
               <DiscStack
                 size={18}
@@ -164,7 +166,7 @@ export default function HomePage({
               </p>
               <p className="mt-1.5 flex items-center justify-end gap-1 font-mono text-[12px] text-muted">
                 <TrendArrow dir={v.trend.dir} />
-                {v.trend.label}
+                {v.trend.delta} {t("vsYesterday")}
               </p>
             </div>
           </article>

@@ -6,6 +6,7 @@
 // se pose. Sous le chiffre : le mot d'état de la zone.
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { tapHaptic } from "@/lib/haptics";
 import type { Zone } from "@/lib/score";
 
@@ -18,6 +19,7 @@ const DURATION = 800;
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
 export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
+  const t = useTranslations("home");
   const [filled, setFilled] = useState(false);
   const [display, setDisplay] = useState(0);
   const raf = useRef<number>();
@@ -84,7 +86,7 @@ export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-muted">
-          Récupération
+          {t("recovery")}
         </span>
         <span className="font-display text-[150px] leading-none tracking-[-0.02em] text-paper">
           {display}
@@ -93,7 +95,7 @@ export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
           className="ml-[0.3em] mt-2 font-display text-[20px] leading-none tracking-[0.3em]"
           style={{ color: zone.color }}
         >
-          {zone.word}
+          {t(`word.${zone.name}`)}
         </span>
       </div>
     </div>
