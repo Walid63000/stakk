@@ -32,13 +32,22 @@
       "sleep": "Sleep",
       "hrv": "HRV",
       "restingHr": "Resting HR"
-    }
+    },
+    "reducedPrecision": "Reduced precision",
+    "noData": "No data"
   },
   "trends": {
     "title": "Trends",
-    "subtitle": "Last 7 days",
-    "emptyTitle": "The strain × recovery chart lands here.",
-    "emptyDetail": "A few more sessions and you'll see your week at a glance."
+    "d7": "7d",
+    "d30": "30d",
+    "subtitle7": "Last 7 days",
+    "subtitle30": "Last 30 days",
+    "recovery": "Recovery",
+    "strain": "Strain",
+    "sleep": "Sleep",
+    "hrv": "HRV",
+    "restingHr": "Resting HR",
+    "avg": "avg"
   },
   "settings": {
     "title": "Settings",

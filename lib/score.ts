@@ -1,5 +1,70 @@
-// Score de récupération : zones et couleurs associées.
+// Score de récupération : calcul, zones et couleurs associées.
 // Les textes (mot d'état, verdicts) vivent dans messages/*.json.
+
+export type SignalKey = "sleep" | "hrv" | "restingHr";
+export type Signals = Partial<Record<SignalKey, number | null>>;
+export type Precision = "full" | "reduced";
+export type ComputedScore = {
+  score: number;
+  precision: Precision;
+  missing: SignalKey[];
+};
+
+const KEYS: SignalKey[] = ["sleep", "hrv", "restingHr"];
+
+// Pondérations nominales quand les trois signaux sont là.
+const FULL: Record<SignalKey, number> = {
+  sleep: 0.4,
+  hrv: 0.35,
+  restingHr: 0.25,
+};
+// HRV absente (montres qui ne la partagent pas) : sommeil 55% + FC 45%.
+const NO_HRV: Partial<Record<SignalKey, number>> = {
+  sleep: 0.55,
+  restingHr: 0.45,
+};
+// Sommeil absent : HRV 55% + FC 45%.
+const NO_SLEEP: Partial<Record<SignalKey, number>> = {
+  hrv: 0.55,
+  restingHr: 0.45,
+};
+
+/**
+ * Calcule le score à partir des signaux disponibles (chacun 0..100).
+ * Jamais d'écran vide : un signal manquant dégrade la précision,
+ * il ne supprime pas le score.
+ */
+export function computeScore(signals: Signals): ComputedScore {
+  const has = (k: SignalKey) => typeof signals[k] === "number";
+  const available = KEYS.filter(has);
+  const missing = KEYS.filter((k) => !has(k));
+
+  const weighted = (weights: Partial<Record<SignalKey, number>>) =>
+    Math.round(
+      (Object.entries(weights) as [SignalKey, number][]).reduce(
+        (sum, [k, w]) => sum + (signals[k] as number) * w,
+        0,
+      ),
+    );
+
+  if (missing.length === 0)
+    return { score: weighted(FULL), precision: "full", missing };
+  if (missing.length === 1 && missing[0] === "hrv")
+    return { score: weighted(NO_HRV), precision: "reduced", missing };
+  if (missing.length === 1 && missing[0] === "sleep")
+    return { score: weighted(NO_SLEEP), precision: "reduced", missing };
+  if (available.length > 0) {
+    // Cas restants (FC seule absente, un seul signal…) : on renormalise
+    // les pondérations nominales sur ce qui est disponible.
+    const total = available.reduce((s, k) => s + FULL[k], 0);
+    const weights = Object.fromEntries(
+      available.map((k) => [k, FULL[k] / total]),
+    ) as Partial<Record<SignalKey, number>>;
+    return { score: weighted(weights), precision: "reduced", missing };
+  }
+  // Aucun signal : score neutre plutôt qu'un écran vide.
+  return { score: 50, precision: "reduced", missing };
+}
 
 export type ZoneName = "green" | "yellow" | "red";
 

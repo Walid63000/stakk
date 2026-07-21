@@ -32,13 +32,22 @@
       "sleep": "Sommeil",
       "hrv": "HRV",
       "restingHr": "FC repos"
-    }
+    },
+    "reducedPrecision": "Précision réduite",
+    "noData": "Aucune donnée"
   },
   "trends": {
     "title": "Tendances",
-    "subtitle": "7 derniers jours",
-    "emptyTitle": "Le graphique strain × récup arrive ici.",
-    "emptyDetail": "Encore quelques séances et tu verras ta semaine d'un seul coup d'œil."
+    "d7": "7 j",
+    "d30": "30 j",
+    "subtitle7": "7 derniers jours",
+    "subtitle30": "30 derniers jours",
+    "recovery": "Récup",
+    "strain": "Strain",
+    "sleep": "Sommeil",
+    "hrv": "HRV",
+    "restingHr": "FC repos",
+    "avg": "moy"
   },
   "settings": {
     "title": "Réglages",

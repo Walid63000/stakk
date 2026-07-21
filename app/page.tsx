@@ -6,7 +6,7 @@ import { MiniRing } from "@/components/MiniRing";
 import { CountUp } from "@/components/CountUp";
 import { Wordmark } from "@/components/Wordmark";
 import { today, scenarioFor } from "@/lib/mock";
-import { zoneFor } from "@/lib/score";
+import { computeScore, zoneFor, type Signals } from "@/lib/score";
 
 function TrendArrow({ dir }: { dir: "up" | "down" }) {
   return (
@@ -30,18 +30,40 @@ function TrendArrow({ dir }: { dir: "up" | "down" }) {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams?: { score?: string };
+  searchParams?: { score?: string; missing?: string };
 }) {
   const t = await getTranslations("home");
 
   // ?score=55 permet de prévisualiser les zones jaune/rouge.
   const parsed = Number(searchParams?.score);
-  const score = Number.isFinite(parsed)
+  const baseScore = Number.isFinite(parsed)
     ? Math.min(100, Math.max(0, Math.round(parsed)))
     : today.score;
 
+  // ?missing=hrv|sleep simule une montre qui ne partage pas le signal :
+  // le score se recalcule sur ce qui reste, la précision est dégradée.
+  const missing =
+    searchParams?.missing === "hrv" || searchParams?.missing === "sleep"
+      ? searchParams.missing
+      : null;
+
+  const scenario = scenarioFor(baseScore);
+  const vitals = scenario.vitals.map((v) =>
+    (missing === "hrv" && v.labelKey === "hrv") ||
+    (missing === "sleep" && v.labelKey === "sleep")
+      ? { ...v, missing: true }
+      : { ...v, missing: false },
+  );
+
+  const signals: Signals = Object.fromEntries(
+    vitals.map((v) => [v.labelKey, v.missing ? null : Math.round(v.pct * 100)]),
+  );
+  const computed = computeScore(signals);
+  const score = missing ? computed.score : baseScore;
+  const precision = missing ? computed.precision : "full";
+
   const zone = zoneFor(score);
-  const data = scenarioFor(score);
+  const data = { ...scenario, vitals };
 
   return (
     <div className="stagger">
@@ -93,6 +115,29 @@ export default async function HomePage({
         <ScoreRing score={score} zone={zone} />
       </section>
 
+      {/* Signal manquant : le score reste là, la précision est annoncée */}
+      {precision === "reduced" && (
+        <section className="rise mb-4 flex justify-center">
+          <span className="inline-flex items-center gap-1.5 rounded-pill border border-line bg-raise px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+            <svg
+              viewBox="0 0 12 12"
+              width={11}
+              height={11}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.4}
+              strokeLinecap="round"
+            >
+              <circle cx="6" cy="8.5" r="1.1" fill="currentColor" stroke="none" />
+              <path d="M3.6 6.4a3.4 3.4 0 0 1 4.8 0" />
+              <path d="M1.8 4.4a6 6 0 0 1 4.2-1.7" strokeDasharray="2 2.2" />
+              <path d="M10.2 4.4a6 6 0 0 0-1.6-1.1" />
+            </svg>
+            {t("reducedPrecision")}
+          </span>
+        </section>
+      )}
+
       {/* Verdict direct, 2 lignes max, barre latérale couleur de zone */}
       <section className="rise mt-1 flex justify-center">
         <div className="flex items-center gap-3.5">
@@ -117,10 +162,14 @@ export default async function HomePage({
           href="/tendances"
           className="pressable flex flex-col items-center gap-2.5"
         >
-          <MiniRing
-            value={data.sleepPerf}
-            color={zoneFor(data.sleepPerf).color}
-          />
+          {missing === "sleep" ? (
+            <MiniRing value={0} color="#8B8B87" display="—" />
+          ) : (
+            <MiniRing
+              value={data.sleepPerf}
+              color={zoneFor(data.sleepPerf).color}
+            />
+          )}
           <span className="font-sans text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
             {t("sleep")}
           </span>
@@ -151,24 +200,35 @@ export default async function HomePage({
               </span>
               <DiscStack
                 size={18}
-                value={v.pct}
-                color={zoneFor(v.pct * 100).color}
+                value={v.missing ? 0 : v.pct}
+                color={v.missing ? undefined : zoneFor(v.pct * 100).color}
               />
             </div>
-            <div className="text-right">
-              <p className="font-mono text-[28px] font-semibold leading-none text-paper">
-                <CountUp to={v.value} format={v.format} />
-                {v.unit && (
-                  <span className="ml-1.5 text-[13px] font-normal text-muted">
-                    {v.unit}
-                  </span>
-                )}
-              </p>
-              <p className="mt-1.5 flex items-center justify-end gap-1 font-mono text-[12px] text-muted">
-                <TrendArrow dir={v.trend.dir} />
-                {v.trend.delta} {t("vsYesterday")}
-              </p>
-            </div>
+            {v.missing ? (
+              <div className="text-right">
+                <p className="font-mono text-[28px] font-semibold leading-none text-faint">
+                  —
+                </p>
+                <p className="mt-1.5 font-mono text-[12px] text-faint">
+                  {t("noData")}
+                </p>
+              </div>
+            ) : (
+              <div className="text-right">
+                <p className="font-mono text-[28px] font-semibold leading-none text-paper">
+                  <CountUp to={v.value} format={v.format} />
+                  {v.unit && (
+                    <span className="ml-1.5 text-[13px] font-normal text-muted">
+                      {v.unit}
+                    </span>
+                  )}
+                </p>
+                <p className="mt-1.5 flex items-center justify-end gap-1 font-mono text-[12px] text-muted">
+                  <TrendArrow dir={v.trend.dir} />
+                  {v.trend.delta} {t("vsYesterday")}
+                </p>
+              </div>
+            )}
           </article>
         ))}
       </section>
