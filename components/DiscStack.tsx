@@ -40,10 +40,13 @@ export function DiscStack({ size = 28, value, className }: Props) {
     >
       {BARS.map((bar, i) => {
         // i = 0 est le sommet ; on allume depuis la base.
+        // En mode jauge, le rouge reste rare : le sommet ne s'embrase
+        // qu'à pleine pile (valeur maximale). En logo, il est toujours rouge.
         const on = BARS.length - i <= lit;
+        const emberAllowed = value === undefined || value >= 0.995;
         const fill = !on
           ? "rgba(245,243,238,0.10)"
-          : bar.ember
+          : bar.ember && emberAllowed
             ? "#D6362B"
             : "#F5F3EE";
         return (

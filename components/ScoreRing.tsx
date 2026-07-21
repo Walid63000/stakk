@@ -1,28 +1,27 @@
 "use client";
 
-// Hero de l'écran Home : le score dans un anneau de progression.
-// Remplissage fluide à l'ouverture (600ms), chiffre en Anton qui compte
-// en synchronisation avec l'anneau, haptic au moment où le score se pose.
+// Hero de l'écran Home : le score de récup dans un anneau épais.
+// Remplissage à l'ouverture : 800ms, courbe spring avec léger overshoot,
+// glow subtil de la couleur de zone, haptic léger quand l'anneau se pose.
 
 import { useEffect, useRef, useState } from "react";
-import { impactHaptic } from "@/lib/haptics";
+import { tapHaptic } from "@/lib/haptics";
+import type { Zone } from "@/lib/score";
 
-const SIZE = 300;
-const STROKE = 16;
-const R = (SIZE - STROKE) / 2 - 4;
+const SIZE = 330;
+const STROKE = 12;
+const R = (SIZE - STROKE) / 2 - 6;
 const C = 2 * Math.PI * R;
-const DURATION = 600;
+const DURATION = 800;
 
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-export function ScoreRing({ score }: { score: number }) {
+export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
   const [filled, setFilled] = useState(false);
   const [display, setDisplay] = useState(0);
   const raf = useRef<number>();
 
   useEffect(() => {
-    // Déclenche le remplissage une frame après le mount pour que la
-    // transition CSS parte bien de zéro.
     const id = requestAnimationFrame(() => setFilled(true));
 
     let start: number | null = null;
@@ -33,7 +32,7 @@ export function ScoreRing({ score }: { score: number }) {
       if (t < 1) {
         raf.current = requestAnimationFrame(tick);
       } else {
-        impactHaptic();
+        tapHaptic();
       }
     };
     raf.current = requestAnimationFrame(tick);
@@ -54,7 +53,7 @@ export function ScoreRing({ score }: { score: number }) {
           cy={SIZE / 2}
           r={R}
           fill="none"
-          stroke="rgba(245,243,238,0.07)"
+          stroke="rgba(245,243,238,0.06)"
           strokeWidth={STROKE}
         />
         <circle
@@ -62,26 +61,27 @@ export function ScoreRing({ score }: { score: number }) {
           cy={SIZE / 2}
           r={R}
           fill="none"
-          stroke="#D6362B"
+          stroke={zone.color}
           strokeWidth={STROKE}
           strokeLinecap="round"
           strokeDasharray={C}
           strokeDashoffset={offset}
           transform={`rotate(-90 ${SIZE / 2} ${SIZE / 2})`}
           style={{
-            transition: `stroke-dashoffset ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`,
-            filter: "drop-shadow(0 0 14px rgba(214,54,43,0.35))",
+            // Spring léger : petit overshoot au-delà de la cible, puis retour.
+            transition: `stroke-dashoffset ${DURATION}ms cubic-bezier(0.3, 1.18, 0.4, 1)`,
+            filter: `drop-shadow(0 0 24px ${zone.glow})`,
           }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
-          Score du jour
+        <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-muted">
+          Récupération
         </span>
-        <span className="mt-1 font-display text-[104px] leading-none text-paper">
+        <span className="font-display text-[132px] leading-none text-paper">
           {display}
         </span>
-        <span className="mt-2 font-mono text-[12px] text-faint">/ 100</span>
+        <span className="font-mono text-[12px] text-faint">/ 100</span>
       </div>
     </div>
   );

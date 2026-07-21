@@ -1,89 +1,109 @@
-import Link from "next/link";
 import { DiscStack } from "@/components/DiscStack";
 import { ScoreRing } from "@/components/ScoreRing";
-import { today, sessions } from "@/lib/mock";
-import { verdictFor } from "@/lib/score";
+import { CountUp } from "@/components/CountUp";
+import { Wordmark } from "@/components/Wordmark";
+import { today, vitals } from "@/lib/mock";
+import { verdictFor, zoneFor } from "@/lib/score";
 
 export default function HomePage() {
+  const zone = zoneFor(today.score);
   const verdict = verdictFor(today.score);
-  const last = sessions[0];
 
   return (
     <div className="stagger">
-      <header className="rise flex items-center justify-between pt-2">
-        <div className="flex items-center gap-2.5">
-          <DiscStack size={20} />
-          <span className="text-[15px] font-bold uppercase tracking-[0.18em] text-paper">
-            Stakk
+      {/* Fond : dégradé radial subtil centré derrière le score,
+          + trame de points quasi invisible façon caoutchouc de plateau */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(85% 48% at 50% 26%, #16171B 0%, #0C0D10 100%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10"
+        style={{
+          backgroundImage:
+            "radial-gradient(rgba(245,243,238,0.04) 1px, transparent 1.4px)",
+          backgroundSize: "22px 22px",
+        }}
+      />
+
+      {/* Header minimal : wordmark au A-pile, streak à droite */}
+      <header className="rise flex items-center justify-between pt-3">
+        <Wordmark />
+        <div className="flex items-center gap-1.5 text-muted">
+          <svg
+            viewBox="0 0 24 24"
+            width={16}
+            height={16}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.7}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+          </svg>
+          <span className="font-mono text-[14px] font-semibold text-paper">
+            <CountUp to={today.streakDays} />
           </span>
         </div>
-        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-          {today.dateLabel}
-        </span>
       </header>
 
-      {/* Hero : le score, rien d'autre ne doit lui voler la vedette */}
-      <section className="rise mt-12 flex flex-col items-center">
-        <ScoreRing score={today.score} />
-        <h1 className="mt-8 text-center text-[22px] font-semibold tracking-tight text-paper">
-          {verdict.line}
-        </h1>
-        <p className="mt-1.5 max-w-[280px] text-center text-[14px] leading-relaxed text-muted">
-          {verdict.detail}
-        </p>
+      {/* Hero : le score occupe l'essentiel de l'écran */}
+      <section className="rise flex min-h-[46dvh] items-center justify-center">
+        <ScoreRing score={today.score} zone={zone} />
       </section>
 
-      {/* Le reste, discret */}
-      <section className="rise mt-12 grid grid-cols-3 gap-3">
-        <div className="rounded-card border border-line bg-raise p-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-faint">
-            Série
-          </p>
-          <p className="mt-2 font-mono text-[17px] font-semibold text-paper">
-            {today.streakDays} j
-          </p>
+      {/* Verdict avec sa barre latérale couleur de zone — 2 lignes max */}
+      <section className="rise mt-2 flex justify-center">
+        <div className="flex items-center gap-3.5">
+          <span
+            className="w-[3px] self-stretch rounded-pill"
+            style={{ background: zone.color }}
+          />
+          <div className="text-left">
+            <p className="text-[17px] font-semibold leading-snug text-paper">
+              {verdict.line}
+            </p>
+            <p className="mt-0.5 text-[14px] leading-snug text-muted">
+              {verdict.detail}
+            </p>
+          </div>
         </div>
-        <div className="rounded-card border border-line bg-raise p-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-faint">
-            Tonnage
-          </p>
-          <p className="mt-2 font-mono text-[17px] font-semibold text-paper">
-            {(today.tonnageKg / 1000).toLocaleString("fr-FR", {
-              maximumFractionDigits: 1,
-            })}
-            <span className="text-[12px] text-muted"> t</span>
-          </p>
-        </div>
-        <Link
-          href="/records"
-          className="pressable rounded-card border border-ember/30 bg-ember-glow p-4"
-        >
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ember">
-            Record
-          </p>
-          <p className="mt-2 font-mono text-[17px] font-semibold text-paper">
-            110<span className="text-[12px] text-muted"> kg</span>
-          </p>
-        </Link>
       </section>
 
-      <Link
-        href="/seances"
-        className="rise pressable mt-4 flex items-center justify-between rounded-card border border-line bg-raise p-5"
-      >
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-faint">
-            Dernière séance
-          </p>
-          <p className="mt-1.5 text-[16px] font-semibold text-paper">
-            {last.name}
-            <span className="ml-2.5 font-mono text-[12px] font-normal text-muted">
-              {last.when} · {last.durationMin} min
+      {/* Les 3 composantes : glassmorphism discret, mini-jauge signature */}
+      <section className="rise mt-8 flex flex-col gap-2.5">
+        {vitals.map((v) => (
+          <article
+            key={v.id}
+            className="flex items-center justify-between rounded-[16px] border p-4 backdrop-blur-md"
+            style={{
+              background: "rgba(245,243,238,0.04)",
+              borderColor: "rgba(245,243,238,0.08)",
+            }}
+          >
+            <span className="text-[14px] font-medium text-muted">
+              {v.label}
             </span>
-          </p>
-        </div>
-        <DiscStack size={26} value={last.intensity} />
-      </Link>
+            <div className="flex items-center gap-5">
+              <span className="font-mono text-[18px] font-semibold text-paper">
+                <CountUp to={v.value} format={v.format} />
+                {v.unit && (
+                  <span className="ml-1 text-[12px] font-normal text-muted">
+                    {v.unit}
+                  </span>
+                )}
+              </span>
+              <DiscStack size={20} value={v.pct} />
+            </div>
+          </article>
+        ))}
+      </section>
     </div>
   );
 }

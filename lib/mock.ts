@@ -7,6 +7,25 @@ export const today = {
   dateLabel: "Dim. 20 juil.",
 };
 
+// Les trois composantes du score de récupération.
+export type VitalEntry = {
+  id: string;
+  label: string;
+  /** Valeur brute à compter en count-up. */
+  value: number;
+  /** Format d'affichage de la valeur. */
+  format: "hm" | "int";
+  unit: string;
+  /** Proportion 0..1 — pilote la mini-jauge pile de disques. */
+  pct: number;
+};
+
+export const vitals: VitalEntry[] = [
+  { id: "sleep", label: "Sommeil", value: 442, format: "hm", unit: "", pct: 0.88 },
+  { id: "hrv", label: "HRV", value: 62, format: "int", unit: "ms", pct: 0.74 },
+  { id: "fc", label: "FC repos", value: 52, format: "int", unit: "bpm", pct: 0.81 },
+];
+
 export type SessionEntry = {
   id: string;
   name: string;
