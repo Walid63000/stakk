@@ -34,7 +34,8 @@
       "restingHr": "Resting HR"
     },
     "reducedPrecision": "Reduced precision",
-    "noData": "No data"
+    "noData": "No data",
+    "share": "Share"
   },
   "trends": {
     "title": "Trends",
@@ -69,5 +70,12 @@
       "logout": "Log out"
     },
     "version": "Stakk 0.1.0"
+  },
+  "share": {
+    "share": "Share",
+    "days": "days",
+    "sleep": "SLEEP",
+    "hrv": "HRV",
+    "rhr": "RHR"
   }
 }

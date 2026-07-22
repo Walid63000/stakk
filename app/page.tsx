@@ -232,6 +232,30 @@ export default async function HomePage({
           </article>
         ))}
       </section>
+
+      {/* Partage : discret, la carte fait le spectacle */}
+      <section className="rise mt-7 flex justify-center">
+        <Link
+          href={missing ? "/share" : `/share?score=${score}`}
+          className="pressable flex items-center gap-2 rounded-pill border border-line bg-raise px-5 py-2.5 text-[13px] font-medium text-muted"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width={15}
+            height={15}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.8}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 3.5v10" />
+            <path d="m8.5 6.5 3.5-3 3.5 3" />
+            <path d="M6.5 11.5v8h11v-8" />
+          </svg>
+          {t("share")}
+        </Link>
+      </section>
     </div>
   );
 }

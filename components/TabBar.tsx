@@ -65,6 +65,9 @@ export function TabBar() {
   const pathname = usePathname();
   const search = useSearchParams();
 
+  // La preview de partage est plein écran : pas de nav.
+  if (pathname === "/share") return null;
+
   // L'onglet actif prend la couleur de zone du jour — détail vivant.
   // ?score=… (previews) est respecté pour rester cohérent à l'écran.
   const raw = search.get("score");

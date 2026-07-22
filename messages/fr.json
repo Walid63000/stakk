@@ -34,7 +34,8 @@
       "restingHr": "FC repos"
     },
     "reducedPrecision": "Précision réduite",
-    "noData": "Aucune donnée"
+    "noData": "Aucune donnée",
+    "share": "Partager"
   },
   "trends": {
     "title": "Tendances",
@@ -69,5 +70,12 @@
       "logout": "Déconnexion"
     },
     "version": "Stakk 0.1.0"
+  },
+  "share": {
+    "share": "Partager",
+    "days": "j",
+    "sleep": "SOMMEIL",
+    "hrv": "HRV",
+    "rhr": "FC"
   }
 }
