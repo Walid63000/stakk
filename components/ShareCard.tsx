@@ -10,7 +10,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Wordmark } from "@/components/Wordmark";
-import type { Zone } from "@/lib/score";
+import { gaugeColorFor, type Zone } from "@/lib/score";
 
 const RING = 264;
 const STROKE = 11;
@@ -41,10 +41,12 @@ function dateLabel(locale: string) {
   return locale === "fr" ? `${weekday} ${dd}.${mm}` : `${weekday} ${mm}.${dd}`;
 }
 
-/** La signature en jauge horizontale géante, remplie selon le score. */
-function GiantStack({ score, zone }: { score: number; zone: Zone }) {
+/** La signature en jauge horizontale géante, remplie selon le score.
+    Couleur : l'échelle fine des jauges — une pile, une couleur. */
+function GiantStack({ score }: { score: number }) {
   const widths = [34, 56, 78, 100]; // % — sommet en premier
   const lit = Math.round((score / 100) * widths.length);
+  const color = gaugeColorFor(score);
   return (
     <div className="flex w-full flex-col items-center gap-[9px]">
       {widths.map((w, i) => {
@@ -56,7 +58,7 @@ function GiantStack({ score, zone }: { score: number; zone: Zone }) {
             className="h-[15px] rounded-pill"
             style={{
               width: `${w}%`,
-              background: on ? zone.color : "rgba(245,243,238,0.10)",
+              background: on ? color : "rgba(245,243,238,0.10)",
             }}
           />
         );
@@ -168,7 +170,7 @@ export function ShareCard({ score, zone, metrics, streakDays }: Props) {
 
       {/* 4 — La signature en jauge géante */}
       <div className="relative">
-        <GiantStack score={score} zone={zone} />
+        <GiantStack score={score} />
       </div>
 
       {/* 5 — Mini-métriques */}

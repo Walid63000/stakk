@@ -66,6 +66,21 @@ export function computeScore(signals: Signals): ComputedScore {
   return { score: 50, precision: "reduced", missing };
 }
 
+/**
+ * Échelle fine des jauges pile de disques — 5 paliers.
+ * Une pile = une couleur = un état : jamais de dégradé multicolore
+ * à l'intérieur d'une même pile. L'anneau principal et le mot d'état
+ * restent sur les 3 zones classiques ; seules les jauges gagnent
+ * cette granularité.
+ */
+export function gaugeColorFor(value: number): string {
+  if (value >= 80) return "#1E9E52"; // vert
+  if (value >= 60) return "#8FBF2B"; // vert-jaune
+  if (value >= 45) return "#F2B90D"; // jaune
+  if (value >= 34) return "#E07B1F"; // orange
+  return "#D6362B"; // rouge
+}
+
 export type ZoneName = "green" | "yellow" | "red";
 
 export type Zone = {

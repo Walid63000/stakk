@@ -6,7 +6,12 @@ import { MiniRing } from "@/components/MiniRing";
 import { CountUp } from "@/components/CountUp";
 import { Wordmark } from "@/components/Wordmark";
 import { today, scenarioFor } from "@/lib/mock";
-import { computeScore, zoneFor, type Signals } from "@/lib/score";
+import {
+  computeScore,
+  gaugeColorFor,
+  zoneFor,
+  type Signals,
+} from "@/lib/score";
 
 function TrendArrow({ dir }: { dir: "up" | "down" }) {
   return (
@@ -201,7 +206,7 @@ export default async function HomePage({
               <DiscStack
                 size={18}
                 value={v.missing ? 0 : v.pct}
-                color={v.missing ? undefined : zoneFor(v.pct * 100).color}
+                color={v.missing ? undefined : gaugeColorFor(v.pct * 100)}
               />
             </div>
             {v.missing ? (
