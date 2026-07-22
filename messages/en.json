@@ -52,23 +52,22 @@
   },
   "settings": {
     "title": "Settings",
-    "language": "Language",
     "groups": {
-      "you": "You",
+      "daily": "Daily",
       "app": "App",
       "account": "Account"
     },
-    "rows": {
-      "profile": "Profile",
-      "goals": "Goals",
-      "zones": "Recovery zones",
-      "notifications": "Notifications",
-      "units": "Units",
-      "health": "Health & sensors",
-      "subscription": "Subscription",
-      "privacy": "Privacy",
-      "logout": "Log out"
-    },
+    "morningNotif": "Morning report",
+    "morningNotifHint": "When your recovery lands",
+    "sleepGoal": "Sleep goal",
+    "sleepGoalHint": "Used to score your nights",
+    "units": "Units",
+    "language": "Language",
+    "signIn": "Sign in",
+    "signInHint": "Sync & back up your data",
+    "soon": "Soon",
+    "deleteData": "Delete my data",
+    "deleteDataHint": "Everything, permanently. One tap, no hoops.",
     "version": "Stakk 0.1.0"
   },
   "share": {

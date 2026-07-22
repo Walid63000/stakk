@@ -15,6 +15,10 @@ const STROKE = 12;
 const R = (SIZE - STROKE) / 2 - 6;
 const C = 2 * Math.PI * R;
 const DURATION = 800;
+// Compensation des embouts arrondis : départ reculé d'un demi-embout,
+// arc raccourci d'un embout — la peinture couvre exactement score% du
+// cercle, départ à 12h, sens horaire.
+const CAP_DEG = ((STROKE / 2) / C) * 360;
 
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
@@ -46,7 +50,8 @@ export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
     };
   }, [score]);
 
-  const offset = filled ? C * (1 - score / 100) : C;
+  const arcLen = Math.max(C * (score / 100) - STROKE, STROKE / 2);
+  const offset = filled ? C - arcLen : C;
 
   return (
     <div className="relative" style={{ width: SIZE, height: SIZE }}>
@@ -76,7 +81,7 @@ export function ScoreRing({ score, zone }: { score: number; zone: Zone }) {
           strokeLinecap="round"
           strokeDasharray={C}
           strokeDashoffset={offset}
-          transform={`rotate(-90 ${SIZE / 2} ${SIZE / 2})`}
+          transform={`rotate(${-90 + CAP_DEG} ${SIZE / 2} ${SIZE / 2})`}
           style={{
             // Spring léger : petit overshoot au-delà de la cible, puis retour.
             transition: `stroke-dashoffset ${DURATION}ms cubic-bezier(0.3, 1.18, 0.4, 1)`,

@@ -16,6 +16,11 @@ const RING = 264;
 const STROKE = 11;
 const R = (RING - STROKE) / 2 - 5;
 const C = 2 * Math.PI * R;
+// Les embouts arrondis débordent d'un demi-trait à chaque extrémité :
+// on recule le départ d'un demi-embout et on raccourcit l'arc d'un
+// embout complet pour que la peinture couvre exactement score% du
+// cercle, départ à 12h, sens horaire.
+const CAP_DEG = ((STROKE / 2) / C) * 360;
 
 type Metrics = {
   sleepLabel: string; // ex : "7h22"
@@ -72,7 +77,8 @@ export function ShareCard({ score, zone, metrics, streakDays }: Props) {
   const tHome = useTranslations("home");
   const locale = useLocale();
 
-  const offset = C * (1 - score / 100);
+  const arcLen = Math.max(C * (score / 100) - STROKE, STROKE / 2);
+  const offset = C - arcLen;
 
   const parts = [
     { label: t("sleep"), value: metrics.sleepLabel },
@@ -122,7 +128,12 @@ export function ShareCard({ score, zone, metrics, streakDays }: Props) {
       {/* 2+3 — Le héros : score dans l'anneau, mot d'état dessous */}
       <div className="relative flex justify-center">
         <div className="relative" style={{ width: RING, height: RING }}>
-          <svg viewBox={`0 0 ${RING} ${RING}`} width={RING} height={RING}>
+          <svg
+            viewBox={`0 0 ${RING} ${RING}`}
+            width={RING}
+            height={RING}
+            style={{ overflow: "visible" }}
+          >
             <defs>
               <linearGradient id="share-ring-grad" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stopColor={zone.color} />
@@ -147,8 +158,11 @@ export function ShareCard({ score, zone, metrics, streakDays }: Props) {
               strokeLinecap="round"
               strokeDasharray={C}
               strokeDashoffset={offset}
-              transform={`rotate(-90 ${RING / 2} ${RING / 2})`}
-              style={{ filter: `drop-shadow(0 0 24px ${zone.glow})` }}
+              transform={`rotate(${-90 + CAP_DEG} ${RING / 2} ${RING / 2})`}
+              style={{
+                // Glow d'affiche : blur 40px, opacité 20%, dans les 3 états.
+                filter: `drop-shadow(0 0 40px ${zone.cardGlow})`,
+              }}
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">

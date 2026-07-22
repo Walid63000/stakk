@@ -89,8 +89,10 @@ export type Zone = {
   color: string;
   /** Fin du dégradé de l'anneau, dans le sens de progression. */
   color2: string;
-  /** Ombre portée colorée — blur 30px, opacité 25%. */
+  /** Ombre portée colorée Home — blur 30px, opacité 25%. */
   glow: string;
+  /** Glow d'affiche de la ShareCard — blur 40px, opacité 20%. */
+  cardGlow: string;
 };
 
 export function zoneFor(score: number): Zone {
@@ -100,6 +102,7 @@ export function zoneFor(score: number): Zone {
       color: "#1E9E52",
       color2: "#27C264",
       glow: "rgba(30,158,82,0.25)",
+      cardGlow: "rgba(30,158,82,0.20)",
     };
   if (score >= 34)
     return {
@@ -107,11 +110,13 @@ export function zoneFor(score: number): Zone {
       color: "#F2B90D",
       color2: "#FFD23F",
       glow: "rgba(242,185,13,0.25)",
+      cardGlow: "rgba(242,185,13,0.20)",
     };
   return {
     name: "red",
     color: "#D6362B",
     color2: "#F0564A",
     glow: "rgba(214,54,43,0.25)",
+    cardGlow: "rgba(214,54,43,0.20)",
   };
 }

@@ -52,23 +52,22 @@
   },
   "settings": {
     "title": "Réglages",
-    "language": "Langue",
     "groups": {
-      "you": "Toi",
+      "daily": "Quotidien",
       "app": "App",
       "account": "Compte"
     },
-    "rows": {
-      "profile": "Profil",
-      "goals": "Objectifs",
-      "zones": "Zones de récup",
-      "notifications": "Notifications",
-      "units": "Unités",
-      "health": "Santé & capteurs",
-      "subscription": "Abonnement",
-      "privacy": "Confidentialité",
-      "logout": "Déconnexion"
-    },
+    "morningNotif": "Rapport du matin",
+    "morningNotifHint": "Quand ta récup tombe",
+    "sleepGoal": "Objectif de sommeil",
+    "sleepGoalHint": "Sert à noter tes nuits",
+    "units": "Unités",
+    "language": "Langue",
+    "signIn": "Connexion",
+    "signInHint": "Synchronise et sauvegarde tes données",
+    "soon": "Bientôt",
+    "deleteData": "Supprimer mes données",
+    "deleteDataHint": "Tout, définitivement. Un tap, sans détour.",
     "version": "Stakk 0.1.0"
   },
   "share": {
