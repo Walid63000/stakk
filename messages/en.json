@@ -76,5 +76,23 @@
     "sleep": "SLEEP",
     "hrv": "HRV",
     "rhr": "RHR"
+  },
+  "onboarding": {
+    "welcomeTitle": "Every morning, one number.",
+    "welcomeDetail": "Stakk reads your night and tells you how hard to push today.",
+    "getStarted": "Get started",
+    "connectTitle": "Connect your data",
+    "connectDetail": "STAKK reads sleep, heart rate variability and resting heart rate from Apple Health to compute your daily score. Your raw health data never leaves your phone.",
+    "sleep": "Sleep",
+    "hrv": "Heart rate variability",
+    "rhr": "Resting heart rate",
+    "connectCta": "Connect Apple Health",
+    "connecting": "Connecting…",
+    "connected": "Connected",
+    "privacyLink": "How we handle your data",
+    "privacyDetail": "Scores are computed on your phone. We store no raw health data on our servers — and you can delete everything in one tap from Settings.",
+    "ritualTitle": "Your morning briefing",
+    "ritualDetail": "One notification. Your score and your verdict. That's it.",
+    "start": "Start"
   }
 }

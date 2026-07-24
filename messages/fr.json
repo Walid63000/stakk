@@ -76,5 +76,23 @@
     "sleep": "SOMMEIL",
     "hrv": "HRV",
     "rhr": "FC"
+  },
+  "onboarding": {
+    "welcomeTitle": "Chaque matin, un chiffre.",
+    "welcomeDetail": "Stakk lit ta nuit et te dit à quel point pousser aujourd'hui.",
+    "getStarted": "Commencer",
+    "connectTitle": "Connecte tes données",
+    "connectDetail": "STAKK lit le sommeil, la variabilité cardiaque et la fréquence cardiaque de repos depuis Apple Santé pour calculer ton score du jour. Tes données de santé brutes ne quittent jamais ton téléphone.",
+    "sleep": "Sommeil",
+    "hrv": "Variabilité cardiaque",
+    "rhr": "FC de repos",
+    "connectCta": "Connecter Apple Santé",
+    "connecting": "Connexion…",
+    "connected": "Connecté",
+    "privacyLink": "Comment on traite tes données",
+    "privacyDetail": "Les scores sont calculés sur ton téléphone. Aucune donnée de santé brute sur nos serveurs — et tout se supprime en un tap depuis Réglages.",
+    "ritualTitle": "Ton brief du matin",
+    "ritualDetail": "Une notification. Ton score et ton verdict. C'est tout.",
+    "start": "C'est parti"
   }
 }
